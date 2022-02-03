@@ -1,4 +1,5 @@
 # Script to train machine learning model.
+import pickle
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -47,11 +48,15 @@ metrics = compute_model_metrics(y_test, predictions)
 # Print
 print(f'The train fbeta score is {score}. The inference performance on test data reveals a precision of {metrics[0]}, a recall of {metrics[1]} and an fbeta score of {metrics[2]}')
 
-# Save cleaned data
-cleaned_train = np.concatenate([X_train, np.reshape(y_train, (-1,1))], axis=1, )
+# Save cleaned data & model
+
+# Save model
+with open(r'starter\model\xgb_trained.pkl', 'wb') as file_name:
+    pickle.dump(model, file_name)
+
+# Save data
+cleaned_train = np.concatenate([X_train, np.reshape(y_train, (-1,1))], axis=1)
 cleaned_test = np.concatenate([X_test, np.reshape(y_test, (-1,1))], axis=1)
 
 np.savetxt("starter\data\clean_census_train.csv", cleaned_train, delimiter=",", fmt='%.0f', header=",".join([name for name in train_column_names]))
 np.savetxt("starter\data\clean_census_test.csv", cleaned_test, delimiter=",", fmt='%.0f', header=",".join([name for name in test_column_names]))
-#pd.to_csv('starter\data\cleaned_census_train.csv', cleaned_train)
-#pd.to_csv('starter\data\cleaned_census_test.csv', cleaned_test)
