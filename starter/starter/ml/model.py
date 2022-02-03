@@ -1,11 +1,13 @@
-from sklearn.metrics import fbeta_score, precision_score, recall_score
+import numpy as np
+from sklearn.metrics import fbeta_score, precision_score, recall_score, accuracy_score
+from sklearn.model_selection import StratifiedKFold
+from xgboost import XGBClassifier
 
 
 # Optional: implement hyperparameter tuning.
 def train_model(X_train, y_train):
     """
     Trains a machine learning model and returns it.
-
     Inputs
     ------
     X_train : np.array
@@ -16,15 +18,28 @@ def train_model(X_train, y_train):
     -------
     model
         Trained machine learning model.
-    """
 
-    pass
+    score
+        The train fbeta value
+    """
+    model = XGBClassifier()
+    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=1)
+    lst_accu_stratified = []
+  
+    for train_index, test_index in skf.split(X_train, y_train):
+        x_train_fold, x_test_fold = X_train[train_index], X_train[test_index]
+        y_train_fold, y_test_fold = y_train[train_index], y_train[test_index]
+        model.fit(x_train_fold, y_train_fold)
+        _, _, fbeta = compute_model_metrics(y_test_fold, inference(model,x_test_fold))
+        lst_accu_stratified.append(fbeta)
+    
+    score = np.mean(lst_accu_stratified)        
+    return model, score
 
 
 def compute_model_metrics(y, preds):
     """
     Validates the trained machine learning model using precision, recall, and F1.
-
     Inputs
     ------
     y : np.array
@@ -45,7 +60,6 @@ def compute_model_metrics(y, preds):
 
 def inference(model, X):
     """ Run model inferences and return the predictions.
-
     Inputs
     ------
     model : ???
@@ -57,4 +71,6 @@ def inference(model, X):
     preds : np.array
         Predictions from the model.
     """
-    pass
+    preds = model.predict(X)
+
+    return preds
