@@ -10,7 +10,7 @@ from ml.model import train_model, compute_model_metrics, inference
 # Add the necessary imports for the starter code.
 
 # Add code to load in the data.
-census = pd.read_csv('starter\data\census.csv', index_col=False)
+census = pd.read_csv(r'data\census.csv', index_col=False)
 
 # Optional enhancement, use K-fold cross validation instead of a train-test split.
 train, test = train_test_split(census, test_size=0.20, random_state=42)
@@ -19,12 +19,12 @@ train, test = train_test_split(census, test_size=0.20, random_state=42)
 cat_features = [
     "workclass",
     "education",
-    "marital-status",
+    "marital_status",
     "occupation",
     "relationship",
     "race",
     "sex",
-    "native-country",
+    "native_country",
 ]
 
 # Preprocess train data
@@ -51,12 +51,13 @@ print(f'The train fbeta score is {score}. The inference performance on test data
 # Save cleaned data & model
 
 # Save model
-with open(r'starter\model\xgb_trained.pkl', 'wb') as file_name:
+with open(r'model\xgb_trained.pkl', 'wb') as file_name:
     pickle.dump(model, file_name)
 
 # Save data
 cleaned_train = np.concatenate([X_train, np.reshape(y_train, (-1,1))], axis=1)
 cleaned_test = np.concatenate([X_test, np.reshape(y_test, (-1,1))], axis=1)
 
-np.savetxt("starter\data\clean_census_train.csv", cleaned_train, delimiter=",", fmt='%.0f', header=",".join([name for name in train_column_names]))
-np.savetxt("starter\data\clean_census_test.csv", cleaned_test, delimiter=",", fmt='%.0f', header=",".join([name for name in test_column_names]))
+np.savetxt("data\clean_census_train.csv", cleaned_train, delimiter=",", fmt='%.0f', header=",".join([name for name in train_column_names]))
+np.savetxt("data\clean_census_test.csv", cleaned_test, delimiter=",", fmt='%.0f', header=",".join([name for name in test_column_names]))
+np.savetxt("data\clean_column_names.txt", train_column_names, fmt='%s')

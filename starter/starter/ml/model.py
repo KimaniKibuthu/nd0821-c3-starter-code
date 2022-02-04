@@ -22,8 +22,13 @@ def train_model(X_train, y_train):
     score
         The train fbeta value
     """
-    model = XGBClassifier()
-    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=1)
+    model = XGBClassifier(eta = 0.11118045929413717,
+                         learning_rate = 0.07096680063311142,
+                         max_depth = 7,
+                         n_estimators = 250,
+                         seed = 14)
+
+    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=14)
     lst_accu_stratified = []
   
     for train_index, test_index in skf.split(X_train, y_train):
